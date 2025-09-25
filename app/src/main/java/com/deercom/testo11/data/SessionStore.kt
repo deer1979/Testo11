@@ -14,13 +14,30 @@ class SessionStore @Inject constructor(
 ) {
     private val KEY_ALIAS = stringPreferencesKey("alias")
     private val KEY_COMPANY = stringPreferencesKey("company_id")
+    private val KEY_COMPANY_NAME = stringPreferencesKey("company_name")
+    private val KEY_PROFILE_NAME = stringPreferencesKey("profile_name")
+    private val KEY_PROFILE_PHONE = stringPreferencesKey("profile_phone")
+    private val KEY_PROFILE_DOCID = stringPreferencesKey("profile_docid")
 
     val aliasFlow = ds.data.map { it[KEY_ALIAS].orEmpty() }
     val companyIdFlow = ds.data.map { it[KEY_COMPANY].orEmpty() }
+    val companyNameFlow = ds.data.map { it[KEY_COMPANY_NAME].orEmpty() }
+    val profileNameFlow = ds.data.map { it[KEY_PROFILE_NAME].orEmpty() }
+    val profilePhoneFlow = ds.data.map { it[KEY_PROFILE_PHONE].orEmpty() }
+    val profileDocIdFlow = ds.data.map { it[KEY_PROFILE_DOCID].orEmpty() }
 
-    suspend fun setAlias(v: String) = ds.edit { it[KEY_ALIAS] = v }
-    suspend fun setCompanyId(v: String) = ds.edit { it[KEY_COMPANY] = v }
-    suspend fun clear() = ds.edit { it.clear() }
+    suspend fun setAlias(alias: String) = ds.edit { it[KEY_ALIAS] = alias }
+    suspend fun setCompanyId(id: String) = ds.edit { it[KEY_COMPANY] = id }
+    suspend fun setCompanyName(name: String) = ds.edit { it[KEY_COMPANY_NAME] = name }
+    suspend fun setProfile(name: String, phone: String, docId: String) = ds.edit {
+        it[KEY_PROFILE_NAME] = name
+        it[KEY_PROFILE_PHONE] = phone
+        it[KEY_PROFILE_DOCID] = docId
+    }
+
+    /** Cerrar sesión SIN borrar datos de empresa/perfil */
+    suspend fun clearSessionOnly() = ds.edit { it.remove(KEY_ALIAS) }
+
+    /** Borrar todo (útil para “reset app”) */
+    suspend fun clearAll() = ds.edit { it.clear() }
 }
-
-

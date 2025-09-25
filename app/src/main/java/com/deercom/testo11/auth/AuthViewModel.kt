@@ -12,17 +12,14 @@ class AuthViewModel @Inject constructor(
     private val session: SessionStore
 ) : ViewModel() {
 
-    /** Alias guardado en DataStore (flujo para observar desde UI). */
+    /** Alias guardado en DataStore (para prellenar Login). */
     val aliasFlow: Flow<String> = session.aliasFlow
 
-    /** Valida que el alias ingresado coincida con el alias guardado. */
+    /** Valida que el alias ingresado coincida con lo guardado. */
     suspend fun isAliasValid(input: String): Boolean {
         val saved = session.aliasFlow.first()
         return saved.isNotBlank() && input.equals(saved, ignoreCase = true)
     }
 
-    /** Limpia la sesión. */
-    suspend fun logout() {
-        session.clear()
-    }
+    // Nota: logout lo gestiona HomeViewModel con session.clearSessionOnly()
 }
