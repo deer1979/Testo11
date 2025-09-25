@@ -2,6 +2,8 @@ package com.deercom.testo11.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Domain
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -9,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.deercom.testo11.ui.screens.components.AppScaffold
+import com.deercom.testo11.ui.screens.components.AppTopBar
 import com.deercom.testo11.wizard.WizardViewModel
 import kotlinx.coroutines.launch
 
@@ -23,9 +27,8 @@ fun CreateCompanyScreen(
     val snackbar = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    Scaffold(
-        topBar = { TopAppBar(title = { Text("Crear empresa") }) },
-        snackbarHost = { SnackbarHost(snackbar) }
+    AppScaffold(
+        topBar = { AppTopBar(title = "Crear empresa", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigate = onBack) }
     ) { pad ->
         Column(
             Modifier
@@ -52,9 +55,7 @@ fun CreateCompanyScreen(
                         if (text.isEmpty()) {
                             scope.launch { snackbar.showSnackbar("Ingresa un nombre válido") }
                         } else {
-                            vm.saveCompany(text) {
-                                onNext()
-                            }
+                            vm.saveCompany(text) { onNext() }
                         }
                     },
                     enabled = name.text.isNotBlank()
