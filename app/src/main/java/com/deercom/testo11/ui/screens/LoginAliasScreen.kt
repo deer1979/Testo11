@@ -2,7 +2,9 @@ package com.deercom.testo11.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Login
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -11,9 +13,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.deercom.testo11.auth.AuthViewModel
+import com.deercom.testo11.ui.screens.components.AppScaffold
+import com.deercom.testo11.ui.screens.components.AppTopBar
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginAliasScreen(
     onSuccess: () -> Unit,
@@ -32,10 +35,8 @@ fun LoginAliasScreen(
         }
     }
 
-    Scaffold(
-        topBar = { TopAppBar(title = { Text("Iniciar sesión") }) },
-        snackbarHost = { SnackbarHost(hostState = snackbar) },
-        contentWindowInsets = WindowInsets.safeDrawing
+    AppScaffold(
+        topBar = { AppTopBar(title = "Iniciar sesión", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigate = onBack) }
     ) { pad ->
         Column(
             modifier = Modifier
