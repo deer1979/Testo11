@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material3.Button
@@ -38,7 +39,8 @@ fun CreateAdminUserScreen(
     var alias by remember { mutableStateOf(TextFieldValue("")) }
 
     androidx.compose.material3.Scaffold(
-        topBar = { TopAppBar(title = { Text("Crear Admin Master") }) }
+        topBar = { TopAppBar(title = { Text("Crear Admin Master") }) },
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets.safeDrawing
     ) { pad ->
         Column(
             modifier = Modifier
