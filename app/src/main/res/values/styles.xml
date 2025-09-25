@@ -1,4 +1,6 @@
-
 <resources>
-    <style name="Theme.Material3.DayNight.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar" />
+    <!-- Tema base SIN ActionBar -->
+    <style name="Theme.Testo11" parent="android:Theme.Material.NoActionBar">
+        <!-- El atributo windowLayoutInDisplayCutoutMode requiere API 27+ -->
+    </style>
 </resources>
