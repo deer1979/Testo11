@@ -60,6 +60,10 @@ dependencies {
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
 
 
     // Hilt (puedes dejar 2.51.1, es compatible)
