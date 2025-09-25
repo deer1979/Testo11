@@ -58,6 +58,9 @@ dependencies {
     // Navegación Compose
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+
 
     // Hilt (puedes dejar 2.51.1, es compatible)
     implementation("com.google.dagger:hilt-android:2.51.1")
