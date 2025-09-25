@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.deercom.testo11.wizard.WizardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +29,15 @@ fun CreateCompanyScreen(onNext: () -> Unit, onBack: () -> Unit) {
                 OutlinedButton(onClick = onBack) { Text("Atrás") }
                 Button(onClick = onNext, enabled = name.text.isNotBlank()) { Text("Continuar") }
             }
+        }
+    }
+
+    @Composable
+    fun CreateCompanyScreen(onNext: () -> Unit, onBack: () -> Unit) {
+        val vm = hiltViewModel<WizardViewModel>()
+        // ...
+        Button(onClick = { vm.saveCompany(name.text) { onNext() } }, enabled = name.text.isNotBlank()) {
+            Text("Continuar")
         }
     }
 }

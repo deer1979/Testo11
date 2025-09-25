@@ -15,6 +15,8 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.deercom.testo11.wizard.WizardViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +34,15 @@ fun CreateAdminUserScreen(onNext: () -> Unit, onBack: () -> Unit) {
                 OutlinedButton(onClick = onBack) { Text("Atrás") }
                 Button(onClick = onNext, enabled = alias.text.length >= 3) { Text("Guardar y continuar") }
             }
+        }
+    }
+
+    @Composable
+    fun CreateAdminUserScreen(onNext: () -> Unit, onBack: () -> Unit) {
+        val vm = hiltViewModel<WizardViewModel>()
+        // ...
+        Button(onClick = { vm.saveAdminAlias(alias.text) { onNext() } }, enabled = alias.text.length >= 3) {
+            Text("Guardar y continuar")
         }
     }
 }
