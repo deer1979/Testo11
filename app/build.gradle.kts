@@ -26,16 +26,14 @@ android {
                 "proguard-rules.pro"
             )
         }
-        debug {
-            isMinifyEnabled = false
-        }
+        debug { isMinifyEnabled = false }
     }
 
     buildFeatures { compose = true }
     composeOptions { kotlinCompilerExtensionVersion = "1.5.14" }
+
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 
-    // 🔹 Aquí fijamos Java 17
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -47,26 +45,25 @@ dependencies {
     implementation(composeBom)
     androidTestImplementation(composeBom)
 
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.activity:activity-compose:1.9.2")
+    implementation("androidx.core:core-ktx:1.13.1")          // ✅ compatible con SDK 34 + AGP 8.3.2
+    implementation("androidx.activity:activity-compose:1.9.2")// ✅
+    implementation("androidx.activity:activity-ktx:1.9.2")    // ✅ (si la usas)
+
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
-    // Hilt
+    // Hilt (puedes dejar 2.51.1, es compatible)
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-compiler:2.51.1")
 }
 
-// 🔹 Kotlin también a 17
+// Kotlin 17
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+    kotlinOptions { jvmTarget = "17" }
 }
 
-// 🔹 Usar toolchain (mejor práctica)
 kotlin {
     jvmToolchain(17)
 }

@@ -5,6 +5,8 @@ INJECTED from C:\Users\DESPINOZA\Downloads\Testo11\app\src\main\AndroidManifest.
 INJECTED from C:\Users\DESPINOZA\Downloads\Testo11\app\src\main\AndroidManifest.xml:2:1-18:12
 INJECTED from C:\Users\DESPINOZA\Downloads\Testo11\app\src\main\AndroidManifest.xml:2:1-18:12
 MERGED from [com.google.dagger:hilt-android:2.51.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\840ca18c7eaf58d437e9ab52a27ff932\transformed\jetified-hilt-android-2.51.1\AndroidManifest.xml:16:1-19:12
+MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\aba74ea3e074a71ee82fa69623246fd1\transformed\fragment-1.5.1\AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\2c8e9031e3b46c24d0c2d6a5529a11ac\transformed\jetified-activity-1.9.2\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.compose.material3:material3-android:1.2.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\7fdaca32530d5040fc696ff740e30a34\transformed\jetified-material3-release\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.compose.material:material-ripple-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\87e28b56508e4fd4a9f882d9333d9f98\transformed\jetified-material-ripple-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.material:material-icons-core-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\a1a63f2a222068b6f5a3e223c490ffab\transformed\jetified-material-icons-core-release\AndroidManifest.xml:2:1-7:12
@@ -20,12 +22,10 @@ MERGED from [androidx.compose.ui:ui-util-android:1.6.8] C:\Users\DESPINOZA\.grad
 MERGED from [androidx.compose.ui:ui-text-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\1212787ffe005d0494665395fda32b62\transformed\jetified-ui-text-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\7dd07735e135ef3fbc05081390b28c2a\transformed\jetified-ui-graphics-release\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\37751edf7e7f142aaaf12f4a19b76b96\transformed\jetified-ui-tooling-preview-release\AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\220d6bd4f0f2f678c26902b7b6e94886\transformed\jetified-ui-tooling-release\AndroidManifest.xml:17:1-28:12
 MERGED from [androidx.compose.ui:ui-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\24e65302830294a3382eb44b2dfd98c8\transformed\jetified-ui-release\AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.activity:activity-ktx:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\67e089aab1d26c609afcdcf42ee6a0ec\transformed\jetified-activity-ktx-1.9.2\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\220d6bd4f0f2f678c26902b7b6e94886\transformed\jetified-ui-tooling-release\AndroidManifest.xml:17:1-28:12
 MERGED from [androidx.activity:activity-compose:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\30389eda3fa3ae4d704aea5e5691258b\transformed\jetified-activity-compose-1.9.2\AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\aba74ea3e074a71ee82fa69623246fd1\transformed\fragment-1.5.1\AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.activity:activity:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\2c8e9031e3b46c24d0c2d6a5529a11ac\transformed\jetified-activity-1.9.2\AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity-ktx:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\67e089aab1d26c609afcdcf42ee6a0ec\transformed\jetified-activity-ktx-1.9.2\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\DESPINOZA\.gradle\caches\transforms-4\6c1364cb2eb4186367d459347731dcc5\transformed\loader-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\DESPINOZA\.gradle\caches\transforms-4\aca6060abf1718caaaa676d49aa3c19c\transformed\viewpager-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.autofill:autofill:1.0.0] C:\Users\DESPINOZA\.gradle\caches\transforms-4\643720fd37fa63fb3c34326a05363dd2\transformed\jetified-autofill-1.0.0\AndroidManifest.xml:17:1-24:12
@@ -117,6 +117,10 @@ INJECTED from C:\Users\DESPINOZA\Downloads\Testo11\app\src\main\AndroidManifest.
 INJECTED from C:\Users\DESPINOZA\Downloads\Testo11\app\src\main\AndroidManifest.xml
 MERGED from [com.google.dagger:hilt-android:2.51.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\840ca18c7eaf58d437e9ab52a27ff932\transformed\jetified-hilt-android-2.51.1\AndroidManifest.xml:18:3-42
 MERGED from [com.google.dagger:hilt-android:2.51.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\840ca18c7eaf58d437e9ab52a27ff932\transformed\jetified-hilt-android-2.51.1\AndroidManifest.xml:18:3-42
+MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\aba74ea3e074a71ee82fa69623246fd1\transformed\fragment-1.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\aba74ea3e074a71ee82fa69623246fd1\transformed\fragment-1.5.1\AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\2c8e9031e3b46c24d0c2d6a5529a11ac\transformed\jetified-activity-1.9.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\2c8e9031e3b46c24d0c2d6a5529a11ac\transformed\jetified-activity-1.9.2\AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.material3:material3-android:1.2.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\7fdaca32530d5040fc696ff740e30a34\transformed\jetified-material3-release\AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.material3:material3-android:1.2.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\7fdaca32530d5040fc696ff740e30a34\transformed\jetified-material3-release\AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.material:material-ripple-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\87e28b56508e4fd4a9f882d9333d9f98\transformed\jetified-material-ripple-release\AndroidManifest.xml:5:5-44
@@ -147,18 +151,14 @@ MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] C:\Users\DESPINOZA\.
 MERGED from [androidx.compose.ui:ui-graphics-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\7dd07735e135ef3fbc05081390b28c2a\transformed\jetified-ui-graphics-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\37751edf7e7f142aaaf12f4a19b76b96\transformed\jetified-ui-tooling-preview-release\AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\37751edf7e7f142aaaf12f4a19b76b96\transformed\jetified-ui-tooling-preview-release\AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\220d6bd4f0f2f678c26902b7b6e94886\transformed\jetified-ui-tooling-release\AndroidManifest.xml:20:5-44
-MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\220d6bd4f0f2f678c26902b7b6e94886\transformed\jetified-ui-tooling-release\AndroidManifest.xml:20:5-44
 MERGED from [androidx.compose.ui:ui-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\24e65302830294a3382eb44b2dfd98c8\transformed\jetified-ui-release\AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.ui:ui-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\24e65302830294a3382eb44b2dfd98c8\transformed\jetified-ui-release\AndroidManifest.xml:5:5-44
-MERGED from [androidx.activity:activity-ktx:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\67e089aab1d26c609afcdcf42ee6a0ec\transformed\jetified-activity-ktx-1.9.2\AndroidManifest.xml:5:5-44
-MERGED from [androidx.activity:activity-ktx:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\67e089aab1d26c609afcdcf42ee6a0ec\transformed\jetified-activity-ktx-1.9.2\AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\220d6bd4f0f2f678c26902b7b6e94886\transformed\jetified-ui-tooling-release\AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\DESPINOZA\.gradle\caches\transforms-4\220d6bd4f0f2f678c26902b7b6e94886\transformed\jetified-ui-tooling-release\AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity-compose:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\30389eda3fa3ae4d704aea5e5691258b\transformed\jetified-activity-compose-1.9.2\AndroidManifest.xml:5:5-44
 MERGED from [androidx.activity:activity-compose:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\30389eda3fa3ae4d704aea5e5691258b\transformed\jetified-activity-compose-1.9.2\AndroidManifest.xml:5:5-44
-MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\aba74ea3e074a71ee82fa69623246fd1\transformed\fragment-1.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.fragment:fragment:1.5.1] C:\Users\DESPINOZA\.gradle\caches\transforms-4\aba74ea3e074a71ee82fa69623246fd1\transformed\fragment-1.5.1\AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.activity:activity:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\2c8e9031e3b46c24d0c2d6a5529a11ac\transformed\jetified-activity-1.9.2\AndroidManifest.xml:20:5-44
-MERGED from [androidx.activity:activity:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\2c8e9031e3b46c24d0c2d6a5529a11ac\transformed\jetified-activity-1.9.2\AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-ktx:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\67e089aab1d26c609afcdcf42ee6a0ec\transformed\jetified-activity-ktx-1.9.2\AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.9.2] C:\Users\DESPINOZA\.gradle\caches\transforms-4\67e089aab1d26c609afcdcf42ee6a0ec\transformed\jetified-activity-ktx-1.9.2\AndroidManifest.xml:5:5-44
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\DESPINOZA\.gradle\caches\transforms-4\6c1364cb2eb4186367d459347731dcc5\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.loader:loader:1.0.0] C:\Users\DESPINOZA\.gradle\caches\transforms-4\6c1364cb2eb4186367d459347731dcc5\transformed\loader-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.viewpager:viewpager:1.0.0] C:\Users\DESPINOZA\.gradle\caches\transforms-4\aca6060abf1718caaaa676d49aa3c19c\transformed\viewpager-1.0.0\AndroidManifest.xml:20:5-44
