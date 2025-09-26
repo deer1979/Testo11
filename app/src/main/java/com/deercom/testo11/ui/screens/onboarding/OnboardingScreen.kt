@@ -1,209 +1,191 @@
+@@
+-package com.deercom.testo11.ui.screens.onboarding
 package com.deercom.testo11.ui.screens.onboarding
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Business
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.ImeAction
+ 
+ import androidx.compose.foundation.layout.Arrangement
+ import androidx.compose.foundation.layout.Column
+ import androidx.compose.foundation.layout.Row
+ import androidx.compose.foundation.layout.Spacer
+ import androidx.compose.foundation.layout.fillMaxSize
+ import androidx.compose.foundation.layout.fillMaxWidth
+ import androidx.compose.foundation.layout.height
+ import androidx.compose.foundation.layout.padding
+ import androidx.compose.material.icons.Icons
+ import androidx.compose.material.icons.filled.ArrowBack
+-import androidx.compose.material3.Button
+import androidx.compose.material3.Button
+ import androidx.compose.material3.Card
+ import androidx.compose.material3.MaterialTheme
+ import androidx.compose.material3.OutlinedTextField
+ import androidx.compose.material3.Text
+ import androidx.compose.runtime.Composable
+ import androidx.compose.runtime.mutableStateOf
+ import androidx.compose.runtime.remember
+ import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.unit.dp
+ import com.deercom.testo11.ui.screens.components.AppScaffold
+ import com.deercom.testo11.ui.screens.components.AppTopBar
 import androidx.compose.ui.text.input.KeyboardOptions
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberAsyncImagePainter
 import com.deercom.testo11.onboarding.OnboardingViewModel
-import com.deercom.testo11.ui.screens.components.AppScaffold
-import com.deercom.testo11.ui.screens.components.AppTopBar
-
+ 
+-@Composable
+-fun OnboardingScreen(onFinished: () -> Unit) {
 @Composable
 fun OnboardingScreen(
-    onFinishFirstTime: () -> Unit,
-    onFinishFromHome: () -> Unit
+    vm: OnboardingViewModel,
+    onGotoSummary: () -> Unit
 ) {
-    val vm: OnboardingViewModel = hiltViewModel()
-    val s by vm.state.collectAsState()
-
-    var tab by remember { mutableStateOf(0) }
-    val tabs = listOf("Empresa", "Perfil", "Seguridad", "Foto")
-
-    AppScaffold(
-        topBar = {
-            AppTopBar(
-                title = "Alta inicial",
-                navigationIcon = Icons.Filled.ArrowBack,
-                onNavigate = { /* back se maneja desde NavGraph */ }
+     AppScaffold(topBar = {
+         AppTopBar(
+             title = "Alta inicial",
+             navigationIcon = Icons.Filled.ArrowBack,
+             onNavigate = { /* back se maneja desde NavGraph */ },
+             actions = { com.deercom.testo11.ui.screens.components.TopBarOverflow() }
+         )
+     }) { pad ->
+-        Column(
+        Column(
+             modifier = Modifier
+                 .fillMaxSize()
+                 .padding(pad)
+                 .padding(16.dp),
+             verticalArrangement = Arrangement.spacedBy(16.dp)
+         ) {
+-            Card(modifier = Modifier.fillMaxWidth()) {
+-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+-                    Text("Empresa", style = MaterialTheme.typography.titleMedium)
+-                    val company = remember { mutableStateOf("") }
+-                    val ruc = remember { mutableStateOf("") }
+-                    OutlinedTextField(value = company.value, onValueChange = { company.value = it }, label = { Text("Nombre de empresa") })
+-                    OutlinedTextField(value = ruc.value, onValueChange = { ruc.value = it }, label = { Text("RUC/ID") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+-                }
+-            }
+-            Card(modifier = Modifier.fillMaxWidth()) {
+-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+-                    Text("Perfil", style = MaterialTheme.typography.titleMedium)
+-                    val first = remember { mutableStateOf("") }
+-                    val last = remember { mutableStateOf("") }
+-                    val phone = remember { mutableStateOf("") }
+-                    OutlinedTextField(value = first.value, onValueChange = { first.value = it }, label = { Text("Nombres") }, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next))
+-                    OutlinedTextField(value = last.value, onValueChange = { last.value = it }, label = { Text("Apellidos") })
+-                    OutlinedTextField(value = phone.value, onValueChange = { phone.value = it }, label = { Text("Teléfono") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
+-                }
+-            }
+-            Card(modifier = Modifier.fillMaxWidth()) {
+-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+-                    Text("Seguridad", style = MaterialTheme.typography.titleMedium)
+-                    val user = remember { mutableStateOf("") }
+-                    val pass = remember { mutableStateOf("") }
+-                    OutlinedTextField(value = user.value, onValueChange = { user.value = it }, label = { Text("Usuario/Alias") }, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next))
+-                    OutlinedTextField(value = pass.value, onValueChange = { pass.value = it }, label = { Text("Contraseña") })
+-                }
+-            }
+-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+-                Button(onClick = onFinished) { Text("Guardar y finalizar") }
+-            }
+            when (vm.current) {
+                com.deercom.testo11.onboarding.OnboardingViewModel.Section.EMPRESA -> EmpresaStep(vm)
+                com.deercom.testo11.onboarding.OnboardingViewModel.Section.PERFIL -> PerfilStep(vm)
+                com.deercom.testo11.onboarding.OnboardingViewModel.Section.SEGURIDAD -> SeguridadStep(vm)
+                com.deercom.testo11.onboarding.OnboardingViewModel.Section.FOTO -> FotoStep(vm)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                Button(onClick = { vm.back() }) { Text("Atrás") }
+                Spacer(Modifier.weight(1f))
+                if (vm.current == com.deercom.testo11.onboarding.OnboardingViewModel.Section.FOTO) {
+                    Button(onClick = onGotoSummary) { Text("Continuar a resumen") }
+                } else {
+                    Button(onClick = { vm.next() }) { Text("Siguiente") }
+                }
+            }
+         }
+     }
+ }
+ 
+@Composable
+private fun EmpresaStep(vm: OnboardingViewModel) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Empresa", style = MaterialTheme.typography.titleMedium)
+            OutlinedTextField(
+                value = vm.companyName, onValueChange = { vm.companyName = it },
+                label = { Text("Nombre de empresa") })
+            OutlinedTextField(
+                value = vm.companyId, onValueChange = { vm.companyId = it },
+                label = { Text("RUC/ID") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
         }
-    ) { pad ->
-        Column(
-            modifier = Modifier
-                .padding(pad)
-                .fillMaxSize()
-                .imePadding(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ScrollableTabRow(selectedTabIndex = tab) {
-                tabs.forEachIndexed { i, title ->
-                    Tab(
-                        selected = tab == i,
-                        onClick = { tab = i },
-                        text = { Text(title) }
-                    )
-                }
-            }
+    }
+}
 
-            Card(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .widthIn(max = 480.dp),
-                elevation = CardDefaults.cardElevation(2.dp)
-            ) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    when (tab) {
-                        0 -> EmpresaTab(s, vm)
-                        1 -> PerfilTab(s, vm)
-                        2 -> SeguridadTab(s, vm)
-                        3 -> FotoTab(s, vm)
-                    }
-                    Spacer(Modifier.height(8.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-                        OutlinedButton(
-                            onClick = { vm.save(onSaved = onFinishFromHome) },
-                            modifier = Modifier.weight(1f)
-                        ) { Text("Guardar borrador") }
-                        Button(
-                            onClick = { vm.save(onSaved = onFinishFirstTime) },
-                            modifier = Modifier.weight(1f)
-                        ) { Text("Guardar y finalizar") }
-                    }
-                }
-            }
+@Composable
+private fun PerfilStep(vm: OnboardingViewModel) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Perfil", style = MaterialTheme.typography.titleMedium)
+            OutlinedTextField(
+                value = vm.firstName, onValueChange = { vm.firstName = it },
+                label = { Text("Nombres") }, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            )
+            OutlinedTextField(
+                value = vm.lastName, onValueChange = { vm.lastName = it },
+                label = { Text("Apellidos") })
+            OutlinedTextField(
+                value = vm.phone, onValueChange = { vm.phone = it },
+                label = { Text("Teléfono") }, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+            )
         }
     }
 }
 
 @Composable
-private fun EmpresaTab(s: OnboardingViewModel.UiState, vm: OnboardingViewModel) {
-    OutlinedTextField(
-        value = s.empresaNombre,
-        onValueChange = { new -> vm.update { it.copy(empresaNombre = new) } },
-        label = { Text("Nombre de la empresa") },
-        leadingIcon = { Icon(Icons.Filled.Business, null) },
-        modifier = Modifier.fillMaxWidth()
-    )
-    OutlinedTextField(
-        value = s.ruc,
-        onValueChange = { new -> vm.update { it.copy(ruc = new) } },
-        label = { Text("RUC / NIT / ID fiscal") },
-        modifier = Modifier.fillMaxWidth()
-    )
-    OutlinedTextField(
-        value = s.localidad,
-        onValueChange = { new -> vm.update { it.copy(localidad = new) } },
-        label = { Text("Localidad (código)") },
-        modifier = Modifier.fillMaxWidth()
-    )
-    AssistChip(onClick = { vm.regenerateAlias() }, label = { Text("Sugerir alias con localidad") })
-}
-
-@Composable
-private fun PerfilTab(s: OnboardingViewModel.UiState, vm: OnboardingViewModel) {
-    OutlinedTextField(
-        value = s.alias,
-        onValueChange = { new -> vm.update { it.copy(alias = new) } },
-        label = { Text("Usuario (alias)") },
-        leadingIcon = { Icon(Icons.Filled.Person, null) },
-        modifier = Modifier.fillMaxWidth()
-    )
-    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = s.nombres,
-            onValueChange = { new -> vm.update { it.copy(nombres = new) } },
-            label = { Text("Nombres") },
-            modifier = Modifier.weight(1f),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
-        )
-        OutlinedTextField(
-            value = s.apellidos,
-            onValueChange = { new -> vm.update { it.copy(apellidos = new) } },
-            label = { Text("Apellidos") },
-            modifier = Modifier.weight(1f),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-        )
+private fun SeguridadStep(vm: OnboardingViewModel) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Seguridad", style = MaterialTheme.typography.titleMedium)
+            OutlinedTextField(
+                value = vm.username, onValueChange = { vm.username = it },
+                label = { Text("Usuario/Alias") }, keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
+            )
+            OutlinedTextField(
+                value = vm.password, onValueChange = { vm.password = it },
+                label = { Text("Contraseña") }
+            )
+        }
     }
-    OutlinedTextField(
-        value = s.cargo,
-        onValueChange = { new -> vm.update { it.copy(cargo = new) } },
-        label = { Text("Cargo") },
-        modifier = Modifier.fillMaxWidth()
-    )
-    OutlinedTextField(
-        value = s.documento,
-        onValueChange = { new -> vm.update { it.copy(documento = new) } },
-        label = { Text("Documento (ID)") },
-        modifier = Modifier.fillMaxWidth()
-    )
-    OutlinedTextField(
-        value = s.telefonoPersonal,
-        onValueChange = { new -> vm.update { it.copy(telefonoPersonal = new) } },
-        label = { Text("Teléfono personal") },
-        modifier = Modifier.fillMaxWidth()
-    )
-    OutlinedTextField(
-        value = s.telefonoDispositivo,
-        onValueChange = { new -> vm.update { it.copy(telefonoDispositivo = new) } },
-        label = { Text("Teléfono del dispositivo") },
-        trailingIcon = {
-            AssistChip(onClick = { /* Placeholder: Phone Number Hint en implementación */ }, label = { Text("Sugerir número") })
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
 }
 
 @Composable
-private fun SeguridadTab(s: OnboardingViewModel.UiState, vm: OnboardingViewModel) {
-    var show1 by remember { mutableStateOf(false) }
-    var show2 by remember { mutableStateOf(false) }
-    OutlinedTextField(
-        value = s.password,
-        onValueChange = { new -> vm.update { it.copy(password = new) } },
-        label = { Text("Contraseña") },
-        visualTransformation = if (show1) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-            TextButton(onClick = { show1 = !show1 }) { Text(if (show1) "Ocultar" else "Ver") }
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
-    OutlinedTextField(
-        value = s.passwordConfirm,
-        onValueChange = { new -> vm.update { it.copy(passwordConfirm = new) } },
-        label = { Text("Confirmar contraseña") },
-        visualTransformation = if (show2) VisualTransformation.None else PasswordVisualTransformation(),
-        trailingIcon = {
-            TextButton(onClick = { show2 = !show2 }) { Text(if (show2) "Ocultar" else "Ver") }
-        },
-        modifier = Modifier.fillMaxWidth()
-    )
-    // Indicador simple (informativo)
-    LinearProgressIndicator(progress = { (s.password.length.coerceAtMost(12)) / 12f })
+private fun FotoStep(vm: OnboardingViewModel) {
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        vm.photoUri = uri?.toString()
+    }
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Foto", style = MaterialTheme.typography.titleMedium)
+            Button(onClick = { launcher.launch("image/*") }) { Text("Seleccionar foto") }
+            vm.photoUri?.let { src ->
+                Image(
+                    painter = rememberAsyncImagePainter(model = src),
+                    contentDescription = "preview",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+    }
 }
-
-@Composable
-private fun FotoTab(s: OnboardingViewModel.UiState, vm: OnboardingViewModel) {
-    OutlinedTextField(
-        value = s.fotoUri,
-        onValueChange = { new -> vm.update { it.copy(fotoUri = new) } },
-        label = { Text("Foto (URI)") },
-        leadingIcon = { Icon(Icons.Filled.PhotoCamera, null) },
-        modifier = Modifier.fillMaxWidth()
-    )
-    Text("En producción: tomar foto / galería + recorte y compresión.")
-}
-

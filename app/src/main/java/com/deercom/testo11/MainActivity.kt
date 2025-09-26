@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import com.deercom.testo11.nav.AppNavGraph
+import com.deercom.testo11.nav.NewAppNavGraph
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -20,7 +22,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent { MainApp() }
+        setContent {
+            NewAppNavGraph()
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 package com.deercom.testo11.login
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -12,8 +13,7 @@ import com.deercom.testo11.ui.screens.components.AppTopBar
 
 @Composable
 fun LoginUserPassScreen(
-    onSuccess: () -> Unit,
-    onBack: () -> Unit
+    onSuccess: () -> Unit
 ) {
     var alias by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
