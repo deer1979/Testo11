@@ -55,9 +55,22 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
+    // Navegación Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+
+
+
     // Hilt (puedes dejar 2.51.1, es compatible)
     implementation("com.google.dagger:hilt-android:2.51.1")
     ksp("com.google.dagger:hilt-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
 }
 
 // Kotlin 17

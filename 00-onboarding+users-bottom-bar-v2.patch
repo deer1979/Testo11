@@ -1,0 +1,671 @@
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/nav/NewRoutes.kt
++package com.deercom.testo11.nav
++
++object NewRoutes {
++    const val ONBOARDING = "onboarding"
++    const val LOGIN_USER_PASS = "login_user_pass"
++    const val HOME = "home_new"
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/nav/NewAppNavGraph.kt
++package com.deercom.testo11.nav
++
++import androidx.compose.runtime.Composable
++import androidx.navigation.compose.NavHost
++import androidx.navigation.compose.composable
++import androidx.navigation.compose.rememberNavController
++import com.deercom.testo11.login.LoginUserPassScreen
++import com.deercom.testo11.ui.screens.home.HomeWithBottomBarScreen
++import com.deercom.testo11.ui.screens.onboarding.OnboardingScreen
++
++@Composable
++fun NewAppNavGraph() {
++    val nav = rememberNavController()
++    NavHost(navController = nav, startDestination = NewRoutes.ONBOARDING) {
++        // Alta unificada
++        composable(NewRoutes.ONBOARDING) {
++            OnboardingScreen(
++                onFinishFirstTime = {
++                    nav.navigate(NewRoutes.LOGIN_USER_PASS) {
++                        popUpTo(NewRoutes.ONBOARDING) { inclusive = true }
++                    }
++                },
++                onFinishFromHome = { nav.popBackStack() }
++            )
++        }
++        // Login usuario + contraseña (modo pruebas)
++        composable(NewRoutes.LOGIN_USER_PASS) {
++            LoginUserPassScreen(
++                onSuccess = {
++                    nav.navigate(NewRoutes.HOME) {
++                        popUpTo(NewRoutes.LOGIN_USER_PASS) { inclusive = true }
++                    }
++                },
++                onBack = { nav.popBackStack() }
++            )
++        }
++        // Home con bottom bar (Usuarios por defecto)
++        composable(NewRoutes.HOME) {
++            HomeWithBottomBarScreen(
++                onEditUser = {
++                    // Abrir Onboarding para "editar" (modo pruebas: reusamos la misma pantalla)
++                    nav.navigate(NewRoutes.ONBOARDING)
++                }
++            )
++        }
++    }
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/data/Models.kt
++package com.deercom.testo11.data
++
++data class User(
++    val alias: String = "",
++    val nombres: String = "",
++    val apellidos: String = "",
++    val cargo: String = "",
++    val documento: String = "",
++    val telefonoPersonal: String = "",
++    val telefonoDispositivo: String = "",
++    val localidad: String = "",
++    val fotoUri: String = "",
++    val passwordHash: String = "" // modo pruebas: hash simple (SHA-256)
++)
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/data/LocalUserRepository.kt
++package com.deercom.testo11.data
++
++import android.content.Context
++import androidx.datastore.preferences.core.Preferences
++import androidx.datastore.preferences.core.edit
++import androidx.datastore.preferences.core.stringSetPreferencesKey
++import androidx.datastore.preferences.preferencesDataStore
++import dagger.hilt.android.qualifiers.ApplicationContext
++import kotlinx.coroutines.flow.Flow
++import kotlinx.coroutines.flow.map
++import java.security.MessageDigest
++import javax.inject.Inject
++import javax.inject.Singleton
++
++private val Context.ds by preferencesDataStore(name = "local_users")
++
++@Singleton
++class LocalUserRepository @Inject constructor(
++    @ApplicationContext private val context: Context
++) {
++    private object K {
++        val USERS: Preferences.Key<Set<String>> = stringSetPreferencesKey("users_set")
++        val CARGOS: Preferences.Key<Set<String>> = stringSetPreferencesKey("cargos_set")
++        val LOCALIDADES: Preferences.Key<Set<String>> = stringSetPreferencesKey("localidades_set")
++    }
++
++    // -------- Encoding simple (sin libs externas) --------
++    private fun encode(user: User): String =
++        listOf(
++            user.alias, user.nombres, user.apellidos, user.cargo, user.documento,
++            user.telefonoPersonal, user.telefonoDispositivo, user.localidad, user.fotoUri, user.passwordHash
++        ).joinToString(separator = "§") // separador poco común
++
++    private fun decode(s: String): User {
++        val parts = s.split("§")
++        return User(
++            alias = parts.getOrNull(0) ?: "",
++            nombres = parts.getOrNull(1) ?: "",
++            apellidos = parts.getOrNull(2) ?: "",
++            cargo = parts.getOrNull(3) ?: "",
++            documento = parts.getOrNull(4) ?: "",
++            telefonoPersonal = parts.getOrNull(5) ?: "",
++            telefonoDispositivo = parts.getOrNull(6) ?: "",
++            localidad = parts.getOrNull(7) ?: "",
++            fotoUri = parts.getOrNull(8) ?: "",
++            passwordHash = parts.getOrNull(9) ?: ""
++        )
++    }
++
++    fun usersFlow(): Flow<List<User>> =
++        context.ds.data.map { it[K.USERS].orEmpty().map(::decode) }
++
++    suspend fun upsertUser(u: User) {
++        context.ds.edit { prefs ->
++            val all = prefs[K.USERS].orEmpty().toMutableSet()
++            // remove old with same alias
++            val without = all.filterNot { decode(it).alias.equals(u.alias, ignoreCase = true) }.toMutableSet()
++            without.add(encode(u))
++            prefs[K.USERS] = without
++            if (u.cargo.isNotBlank()) prefs[K.CARGOS] = prefs[K.CARGOS].orEmpty() + u.cargo
++            if (u.localidad.isNotBlank()) prefs[K.LOCALIDADES] = prefs[K.LOCALIDADES].orEmpty() + u.localidad
++        }
++    }
++
++    fun cargosFlow(): Flow<List<String>> =
++        context.ds.data.map { it[K.CARGOS].orEmpty().sorted() }
++
++    fun localidadesFlow(): Flow<List<String>> =
++        context.ds.data.map { it[K.LOCALIDADES].orEmpty().sorted() }
++
++    // Hash simple (modo pruebas) con SHA-256
++    fun sha256(text: String): String {
++        val md = MessageDigest.getInstance("SHA-256")
++        val bytes = md.digest(text.toByteArray(Charsets.UTF_8))
++        return bytes.joinToString("") { "%02x".format(it) }
++    }
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/onboarding/OnboardingViewModel.kt
++package com.deercom.testo11.onboarding
++
++import androidx.lifecycle.ViewModel
++import androidx.lifecycle.viewModelScope
++import com.deercom.testo11.data.LocalUserRepository
++import com.deercom.testo11.data.User
++import dagger.hilt.android.lifecycle.HiltViewModel
++import kotlinx.coroutines.flow.MutableStateFlow
++import kotlinx.coroutines.flow.StateFlow
++import kotlinx.coroutines.launch
++import java.text.Normalizer
++import javax.inject.Inject
++
++@HiltViewModel
++class OnboardingViewModel @Inject constructor(
++    private val repo: LocalUserRepository
++) : ViewModel() {
++
++    data class UiState(
++        val empresaNombre: String = "",
++        val ruc: String = "",
++        val localidad: String = "",
++        val alias: String = "",
++        val nombres: String = "",
++        val apellidos: String = "",
++        val cargo: String = "",
++        val documento: String = "",
++        val telefonoPersonal: String = "",
++        val telefonoDispositivo: String = "",
++        val fotoUri: String = "",
++        val password: String = "",
++        val passwordConfirm: String = ""
++    )
++
++    private val _state = MutableStateFlow(UiState())
++    val state: StateFlow<UiState> = _state
++
++    fun update(transform: (UiState) -> UiState) {
++        _state.value = transform(_state.value)
++    }
++
++    fun regenerateAlias() {
++        val s = _state.value
++        val initial = s.nombres.trim().firstOrNull()?.lowercase() ?: ""
++        val apellido = s.apellidos.trim().split(" ").firstOrNull()?.lowercase().orEmpty()
++        val loc = s.localidad.trim().lowercase()
++        val base = (initial + apellido + if (loc.isNotBlank()) ".$loc" else "")
++        val normalized = Normalizer.normalize(base, Normalizer.Form.NFD)
++            .replace("\\p{InCombiningDiacriticalMarks}+".toRegex(), "")
++            .replace("[^a-z0-9._]".toRegex(), "")
++        update { it.copy(alias = normalized) }
++    }
++
++    fun save(onSaved: () -> Unit) {
++        val s = _state.value
++        viewModelScope.launch {
++            val user = User(
++                alias = s.alias.ifBlank { "usuario" },
++                nombres = s.nombres,
++                apellidos = s.apellidos,
++                cargo = s.cargo,
++                documento = s.documento,
++                telefonoPersonal = s.telefonoPersonal,
++                telefonoDispositivo = s.telefonoDispositivo,
++                localidad = s.localidad,
++                fotoUri = s.fotoUri,
++                passwordHash = repo.sha256(s.password)
++            )
++            repo.upsertUser(user)
++            onSaved()
++        }
++    }
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/ui/screens/onboarding/OnboardingScreen.kt
++package com.deercom.testo11.ui.screens.onboarding
++
++import androidx.compose.foundation.layout.*
++import androidx.compose.material.icons.Icons
++import androidx.compose.material.icons.filled.ArrowBack
++import androidx.compose.material.icons.filled.Business
++import androidx.compose.material.icons.filled.Lock
++import androidx.compose.material.icons.filled.Person
++import androidx.compose.material.icons.filled.PhotoCamera
++import androidx.compose.material3.*
++import androidx.compose.runtime.*
++import androidx.compose.ui.Alignment
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.text.input.ImeAction
++import androidx.compose.ui.text.input.KeyboardOptions
++import androidx.compose.ui.text.input.VisualTransformation
++import androidx.compose.ui.text.input.PasswordVisualTransformation
++import androidx.compose.ui.unit.dp
++import androidx.hilt.navigation.compose.hiltViewModel
++import com.deercom.testo11.onboarding.OnboardingViewModel
++import com.deercom.testo11.ui.screens.components.AppScaffold
++import com.deercom.testo11.ui.screens.components.AppTopBar
++
++@Composable
++fun OnboardingScreen(
++    onFinishFirstTime: () -> Unit,
++    onFinishFromHome: () -> Unit
++) {
++    val vm: OnboardingViewModel = hiltViewModel()
++    val s by vm.state.collectAsState()
++
++    var tab by remember { mutableStateOf(0) }
++    val tabs = listOf("Empresa", "Perfil", "Seguridad", "Foto")
++
++    AppScaffold(
++        topBar = {
++            AppTopBar(
++                title = "Alta inicial",
++                navigationIcon = Icons.Filled.ArrowBack,
++                onNavigate = { /* back se maneja desde NavGraph */ }
++            )
++        }
++    ) { pad ->
++        Column(
++            modifier = Modifier
++                .padding(pad)
++                .fillMaxSize()
++                .imePadding(),
++            horizontalAlignment = Alignment.CenterHorizontally
++        ) {
++            ScrollableTabRow(selectedTabIndex = tab) {
++                tabs.forEachIndexed { i, title ->
++                    Tab(
++                        selected = tab == i,
++                        onClick = { tab = i },
++                        text = { Text(title) }
++                    )
++                }
++            }
++
++            Card(
++                modifier = Modifier
++                    .padding(16.dp)
++                    .fillMaxWidth()
++                    .widthIn(max = 480.dp),
++                elevation = CardDefaults.cardElevation(2.dp)
++            ) {
++                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
++                    when (tab) {
++                        0 -> EmpresaTab(s, vm)
++                        1 -> PerfilTab(s, vm)
++                        2 -> SeguridadTab(s, vm)
++                        3 -> FotoTab(s, vm)
++                    }
++                    Spacer(Modifier.height(8.dp))
++                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
++                        OutlinedButton(
++                            onClick = { vm.save(onSaved = onFinishFromHome) },
++                            modifier = Modifier.weight(1f)
++                        ) { Text("Guardar borrador") }
++                        Button(
++                            onClick = { vm.save(onSaved = onFinishFirstTime) },
++                            modifier = Modifier.weight(1f)
++                        ) { Text("Guardar y finalizar") }
++                    }
++                }
++            }
++        }
++    }
++}
++
++@Composable
++private fun EmpresaTab(s: OnboardingViewModel.UiState, vm: OnboardingViewModel) {
++    OutlinedTextField(
++        value = s.empresaNombre,
++        onValueChange = { new -> vm.update { it.copy(empresaNombre = new) } },
++        label = { Text("Nombre de la empresa") },
++        leadingIcon = { Icon(Icons.Filled.Business, null) },
++        modifier = Modifier.fillMaxWidth()
++    )
++    OutlinedTextField(
++        value = s.ruc,
++        onValueChange = { new -> vm.update { it.copy(ruc = new) } },
++        label = { Text("RUC / NIT / ID fiscal") },
++        modifier = Modifier.fillMaxWidth()
++    )
++    OutlinedTextField(
++        value = s.localidad,
++        onValueChange = { new -> vm.update { it.copy(localidad = new) } },
++        label = { Text("Localidad (código)") },
++        modifier = Modifier.fillMaxWidth()
++    )
++    AssistChip(onClick = { vm.regenerateAlias() }, label = { Text("Sugerir alias con localidad") })
++}
++
++@Composable
++private fun PerfilTab(s: OnboardingViewModel.UiState, vm: OnboardingViewModel) {
++    OutlinedTextField(
++        value = s.alias,
++        onValueChange = { new -> vm.update { it.copy(alias = new) } },
++        label = { Text("Usuario (alias)") },
++        leadingIcon = { Icon(Icons.Filled.Person, null) },
++        modifier = Modifier.fillMaxWidth()
++    )
++    Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.fillMaxWidth()) {
++        OutlinedTextField(
++            value = s.nombres,
++            onValueChange = { new -> vm.update { it.copy(nombres = new) } },
++            label = { Text("Nombres") },
++            modifier = Modifier.weight(1f),
++            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
++        )
++        OutlinedTextField(
++            value = s.apellidos,
++            onValueChange = { new -> vm.update { it.copy(apellidos = new) } },
++            label = { Text("Apellidos") },
++            modifier = Modifier.weight(1f),
++            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
++        )
++    }
++    OutlinedTextField(
++        value = s.cargo,
++        onValueChange = { new -> vm.update { it.copy(cargo = new) } },
++        label = { Text("Cargo") },
++        modifier = Modifier.fillMaxWidth()
++    )
++    OutlinedTextField(
++        value = s.documento,
++        onValueChange = { new -> vm.update { it.copy(documento = new) } },
++        label = { Text("Documento (ID)") },
++        modifier = Modifier.fillMaxWidth()
++    )
++    OutlinedTextField(
++        value = s.telefonoPersonal,
++        onValueChange = { new -> vm.update { it.copy(telefonoPersonal = new) } },
++        label = { Text("Teléfono personal") },
++        modifier = Modifier.fillMaxWidth()
++    )
++    OutlinedTextField(
++        value = s.telefonoDispositivo,
++        onValueChange = { new -> vm.update { it.copy(telefonoDispositivo = new) } },
++        label = { Text("Teléfono del dispositivo") },
++        trailingIcon = {
++            AssistChip(onClick = { /* Placeholder: Phone Number Hint en implementación */ }, label = { Text("Sugerir número") })
++        },
++        modifier = Modifier.fillMaxWidth()
++    )
++}
++
++@Composable
++private fun SeguridadTab(s: OnboardingViewModel.UiState, vm: OnboardingViewModel) {
++    var show1 by remember { mutableStateOf(false) }
++    var show2 by remember { mutableStateOf(false) }
++    OutlinedTextField(
++        value = s.password,
++        onValueChange = { new -> vm.update { it.copy(password = new) } },
++        label = { Text("Contraseña") },
++        visualTransformation = if (show1) VisualTransformation.None else PasswordVisualTransformation(),
++        trailingIcon = {
++            TextButton(onClick = { show1 = !show1 }) { Text(if (show1) "Ocultar" else "Ver") }
++        },
++        modifier = Modifier.fillMaxWidth()
++    )
++    OutlinedTextField(
++        value = s.passwordConfirm,
++        onValueChange = { new -> vm.update { it.copy(passwordConfirm = new) } },
++        label = { Text("Confirmar contraseña") },
++        visualTransformation = if (show2) VisualTransformation.None else PasswordVisualTransformation(),
++        trailingIcon = {
++            TextButton(onClick = { show2 = !show2 }) { Text(if (show2) "Ocultar" else "Ver") }
++        },
++        modifier = Modifier.fillMaxWidth()
++    )
++    // Indicador simple (informativo)
++    LinearProgressIndicator(progress = { (s.password.length.coerceAtMost(12)) / 12f })
++}
++
++@Composable
++private fun FotoTab(s: OnboardingViewModel.UiState, vm: OnboardingViewModel) {
++    OutlinedTextField(
++        value = s.fotoUri,
++        onValueChange = { new -> vm.update { it.copy(fotoUri = new) } },
++        label = { Text("Foto (URI)") },
++        leadingIcon = { Icon(Icons.Filled.PhotoCamera, null) },
++        modifier = Modifier.fillMaxWidth()
++    )
++    Text("En producción: tomar foto / galería + recorte y compresión.")
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/login/LoginUserPassScreen.kt
++package com.deercom.testo11.login
++
++import androidx.compose.foundation.layout.*
++import androidx.compose.material.icons.automirrored.filled.Login
++import androidx.compose.material3.*
++import androidx.compose.runtime.*
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.text.input.PasswordVisualTransformation
++import androidx.compose.ui.unit.dp
++import com.deercom.testo11.ui.screens.components.AppScaffold
++import com.deercom.testo11.ui.screens.components.AppTopBar
++
++@Composable
++fun LoginUserPassScreen(
++    onSuccess: () -> Unit,
++    onBack: () -> Unit
++) {
++    var alias by remember { mutableStateOf("") }
++    var pass by remember { mutableStateOf("") }
++
++    AppScaffold(
++        topBar = { AppTopBar(title = "Iniciar sesión") }
++    ) { pad ->
++        Column(
++            modifier = Modifier
++                .padding(pad)
++                .padding(16.dp)
++                .fillMaxWidth(),
++            verticalArrangement = Arrangement.spacedBy(12.dp)
++        ) {
++            OutlinedTextField(
++                value = alias, onValueChange = { alias = it },
++                label = { Text("Usuario") },
++                leadingIcon = { Icon(Icons.AutoMirrored.Filled.Login, null) },
++                singleLine = true, modifier = Modifier.fillMaxWidth()
++            )
++            OutlinedTextField(
++                value = pass, onValueChange = { pass = it },
++                label = { Text("Contraseña") },
++                visualTransformation = PasswordVisualTransformation(),
++                singleLine = true, modifier = Modifier.fillMaxWidth()
++            )
++            Button(
++                onClick = { onSuccess() }, // modo pruebas
++                enabled = alias.isNotBlank()
++            ) { Text("Entrar") }
++        }
++    }
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/users/UsersViewModel.kt
++package com.deercom.testo11.users
++
++import androidx.lifecycle.ViewModel
++import com.deercom.testo11.data.LocalUserRepository
++import com.deercom.testo11.data.User
++import dagger.hilt.android.lifecycle.HiltViewModel
++import kotlinx.coroutines.flow.SharingStarted
++import kotlinx.coroutines.flow.StateFlow
++import kotlinx.coroutines.flow.map
++import kotlinx.coroutines.flow.stateIn
++import javax.inject.Inject
++
++@HiltViewModel
++class UsersViewModel @Inject constructor(
++    repo: LocalUserRepository
++) : ViewModel() {
++    val users: StateFlow<List<User>> =
++        repo.usersFlow().map { it.sortedBy { u -> u.alias } }
++            .stateIn(kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main), SharingStarted.Lazily, emptyList())
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/ui/screens/users/UsersListScreen.kt
++package com.deercom.testo11.ui.screens.users
++
++import androidx.compose.foundation.clickable
++import androidx.compose.foundation.layout.*
++import androidx.compose.foundation.lazy.LazyColumn
++import androidx.compose.foundation.lazy.items
++import androidx.compose.material.icons.Icons
++import androidx.compose.material.icons.filled.Edit
++import androidx.compose.material.icons.filled.Groups
++import androidx.compose.material3.*
++import androidx.compose.runtime.*
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.unit.dp
++import androidx.hilt.navigation.compose.hiltViewModel
++import com.deercom.testo11.data.User
++import com.deercom.testo11.users.UsersViewModel
++
++@Composable
++fun UsersListScreen(
++    onEdit: (User) -> Unit
++) {
++    val vm: UsersViewModel = hiltViewModel()
++    val users by vm.users.collectAsState()
++
++    var selected by remember { mutableStateOf<User?>(null) }
++
++    Column(Modifier.fillMaxSize().padding(16.dp)) {
++        ListItem(
++            leadingContent = { Icon(Icons.Filled.Groups, null) },
++            headlineContent = { Text("Usuarios (${users.size})") },
++            supportingContent = { Text("Toque un usuario para ver detalle") }
++        )
++        Spacer(Modifier.height(8.dp))
++        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxSize()) {
++            items(users) { u ->
++                ElevatedCard(
++                    modifier = Modifier.fillMaxWidth().clickable { selected = u }
++                ) {
++                    ListItem(
++                        headlineContent = { Text("${u.nombres} ${u.apellidos}".trim()) },
++                        supportingContent = { Text("${u.alias} • ${u.cargo.ifBlank { "Sin cargo" }}") }
++                    )
++                }
++            }
++        }
++    }
++
++    if (selected != null) {
++        val u = selected!!
++        AlertDialog(
++            onDismissRequest = { selected = null },
++            confirmButton = {
++                TextButton(onClick = { onEdit(u); selected = null }) {
++                    Icon(Icons.Filled.Edit, null); Spacer(Modifier.width(6.dp)); Text("Editar")
++                }
++            },
++            dismissButton = { TextButton(onClick = { selected = null }) { Text("Cerrar") } },
++            title = { Text("${u.nombres} ${u.apellidos}".trim()) },
++            text = {
++                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
++                    Text("Usuario: ${u.alias}")
++                    Text("Cargo: ${u.cargo.ifBlank { "—" }}")
++                    Text("Documento: ${u.documento.ifBlank { "—" }}")
++                    Text("Tel. personal: ${u.telefonoPersonal.ifBlank { "—" }}")
++                    Text("Tel. dispositivo: ${u.telefonoDispositivo.ifBlank { "—" }}")
++                    Text("Localidad: ${u.localidad.ifBlank { "—" }}")
++                }
++            }
++        )
++    }
++}
++
+*** End Patch
+*** Begin Patch
+*** Add File: app/src/main/java/com/deercom/testo11/ui/screens/home/HomeWithBottomBarScreen.kt
++package com.deercom.testo11.ui.screens.home
++
++import androidx.compose.material.icons.Icons
++import androidx.compose.material.icons.filled.Business
++import androidx.compose.material.icons.filled.Home
++import androidx.compose.material.icons.filled.Settings
++import androidx.compose.material.icons.filled.Groups
++import androidx.compose.material3.*
++import androidx.compose.runtime.*
++import androidx.compose.ui.Modifier
++import androidx.compose.foundation.layout.*
++import androidx.compose.ui.unit.dp
++import com.deercom.testo11.data.User
++import com.deercom.testo11.ui.screens.components.AppScaffold
++import com.deercom.testo11.ui.screens.components.AppTopBar
++import com.deercom.testo11.ui.screens.users.UsersListScreen
++
++@Composable
++fun HomeWithBottomBarScreen(
++    onEditUser: (User) -> Unit
++) {
++    var tab by remember { mutableStateOf(0) }
++    val items = listOf("Usuarios", "Inicio", "Empresa", "Ajustes")
++    val icons = listOf(Icons.Filled.Groups, Icons.Filled.Home, Icons.Filled.Business, Icons.Filled.Settings)
++
++    AppScaffold(
++        topBar = { AppTopBar(title = items[tab]) }
++    ) { pad ->
++        Scaffold(
++            modifier = Modifier.padding(pad),
++            bottomBar = {
++                NavigationBar {
++                    items.forEachIndexed { index, label ->
++                        NavigationBarItem(
++                            selected = tab == index,
++                            onClick = { tab = index },
++                            icon = { Icon(icons[index], contentDescription = label) },
++                            label = { Text(label) }
++                        )
++                    }
++                }
++            }
++        ) { inner ->
++            Box(Modifier.padding(inner).fillMaxSize()) {
++                when (tab) {
++                    0 -> UsersListScreen(onEdit = onEditUser)
++                    1 -> Placeholder("Inicio")
++                    2 -> Placeholder("Empresa")
++                    3 -> Placeholder("Ajustes")
++                }
++            }
++        }
++    }
++}
++
++@Composable
++private fun Placeholder(text: String) {
++    Column(
++        modifier = Modifier.fillMaxSize().padding(16.dp),
++        verticalArrangement = Arrangement.spacedBy(8.dp)
++    ) {
++        Text("Sección: $text")
++        Text("Contenido en construcción.")
++    }
++}
++
+*** End Patch
