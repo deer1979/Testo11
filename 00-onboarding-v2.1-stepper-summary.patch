@@ -396,7 +396,11 @@
 +        vm.photoUri = uri?.toString()
 +    }
 +    Card(modifier = Modifier.fillMaxWidth()) {
+<<<<<<< HEAD
 +        Column(Modifier.padding(16	dp), verticalArrangement = Arrangement.spacedBy(12	dp)) {
+=======
++        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+>>>>>>> b9fde5c (wip: cambios locales antes de rebase)
 +            Text("Foto", style = MaterialTheme.typography.titleMedium)
 +            Button(onClick = { launcher.launch("image/*") }) { Text("Seleccionar foto") }
 +            vm.photoUri?.let { src ->
@@ -486,7 +490,11 @@
 +                }
 +            }
 +            Card(Modifier.fillMaxWidth()) {
+<<<<<<< HEAD
 +                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8	dp)) {
+=======
++                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+>>>>>>> b9fde5c (wip: cambios locales antes de rebase)
 +                    Text("Foto", style = MaterialTheme.typography.titleMedium)
 +                    vm.photoUri?.let { src ->
 +                        Image(
@@ -494,7 +502,11 @@
 +                            contentDescription = "preview",
 +                            modifier = Modifier
 +                                .fillMaxWidth()
+<<<<<<< HEAD
 +                                .height(180	dp),
+=======
++                                .height(180.dp),
+>>>>>>> b9fde5c (wip: cambios locales antes de rebase)
 +                            contentScale = ContentScale.Crop
 +                        )
 +                    }
